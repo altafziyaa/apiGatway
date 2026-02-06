@@ -1,10 +1,7 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 
 import gatewayRoutes from "./src/routes/auth.gateway.Routes.js";
-
-dotenv.config();
 
 const app = express();
 
