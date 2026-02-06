@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authGatewayRoutes);
 app.use("/api/cart", cartGatewayRoutes);
-app.use("/api/products", productGatewayRoutes);
+app.use("/api/", productGatewayRoutes);
 
 app.use((err, req, res, next) => {
   console.error("Gateway Error:", err.message);
