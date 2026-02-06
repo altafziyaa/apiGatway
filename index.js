@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.send("API Gateway Service is running");
 });
 
-app.use("/api/auth", verifyJwt, authGatewayRoutes);
+app.use("/api/auth", authGatewayRoutes);
 app.use("/api/cart", cartGatewayRoutes);
 app.use("/api/products", productGatewayRoutes);
 
