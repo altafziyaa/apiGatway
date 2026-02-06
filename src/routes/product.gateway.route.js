@@ -5,14 +5,12 @@ import { verifyJwt } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Get all products
-router.get("/", async (req, res) => {
+router.get("/products", async (req, res) => {
   try {
     const response = await axios.get(
       `${services.PRODUCT_SERVICE}/api/products`,
       { params: req.query },
     );
-
     res.status(response.status).json(response.data);
   } catch (error) {
     res
@@ -21,13 +19,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get single product
-router.get("/:id", async (req, res) => {
+router.get("/products/:productId", async (req, res) => {
   try {
     const response = await axios.get(
-      `${services.PRODUCT_SERVICE}/api/products/${req.params.id}`,
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
     );
-
     res.status(response.status).json(response.data);
   } catch (error) {
     res
@@ -36,8 +32,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Create product
-router.post("/", verifyJwt, async (req, res) => {
+router.post("/products", verifyJwt, async (req, res) => {
   try {
     const response = await axios.post(
       `${services.PRODUCT_SERVICE}/api/products`,
@@ -48,7 +43,6 @@ router.post("/", verifyJwt, async (req, res) => {
         },
       },
     );
-
     res.status(response.status).json(response.data);
   } catch (error) {
     res
@@ -57,11 +51,10 @@ router.post("/", verifyJwt, async (req, res) => {
   }
 });
 
-// Update product
-router.put("/:id", verifyJwt, async (req, res) => {
+router.put("/products/:productId", verifyJwt, async (req, res) => {
   try {
     const response = await axios.put(
-      `${services.PRODUCT_SERVICE}/api/products/${req.params.id}`,
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
       req.body,
       {
         headers: {
@@ -69,7 +62,6 @@ router.put("/:id", verifyJwt, async (req, res) => {
         },
       },
     );
-
     res.status(response.status).json(response.data);
   } catch (error) {
     res
@@ -78,18 +70,35 @@ router.put("/:id", verifyJwt, async (req, res) => {
   }
 });
 
-// Delete product
-router.delete("/:id", verifyJwt, async (req, res) => {
+router.delete("/products/:productId", verifyJwt, async (req, res) => {
   try {
     const response = await axios.delete(
-      `${services.PRODUCT_SERVICE}/api/products/${req.params.id}`,
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
       {
         headers: {
           authorization: req.headers.authorization,
         },
       },
     );
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res
+      .status(error.response?.status || 500)
+      .json(error.response?.data || { message: "Product service error" });
+  }
+});
 
+router.patch("/products/:productId/restore", verifyJwt, async (req, res) => {
+  try {
+    const response = await axios.patch(
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}/restore`,
+      {},
+      {
+        headers: {
+          authorization: req.headers.authorization,
+        },
+      },
+    );
     res.status(response.status).json(response.data);
   } catch (error) {
     res
