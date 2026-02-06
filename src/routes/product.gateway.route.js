@@ -5,7 +5,7 @@ import { verifyJwt } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/products", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const response = await axios.get(
       `${services.PRODUCT_SERVICE}/api/products`,
@@ -19,7 +19,7 @@ router.get("/products", async (req, res) => {
   }
 });
 
-router.get("/products/:productId", async (req, res) => {
+router.get("/:productId", async (req, res) => {
   try {
     const response = await axios.get(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
@@ -32,7 +32,7 @@ router.get("/products/:productId", async (req, res) => {
   }
 });
 
-router.post("/products", verifyJwt, async (req, res) => {
+router.post("/", verifyJwt, async (req, res) => {
   try {
     const response = await axios.post(
       `${services.PRODUCT_SERVICE}/api/products`,
@@ -51,7 +51,7 @@ router.post("/products", verifyJwt, async (req, res) => {
   }
 });
 
-router.put("/products/:productId", verifyJwt, async (req, res) => {
+router.put("/:productId", verifyJwt, async (req, res) => {
   try {
     const response = await axios.put(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
@@ -70,7 +70,7 @@ router.put("/products/:productId", verifyJwt, async (req, res) => {
   }
 });
 
-router.delete("/products/:productId", verifyJwt, async (req, res) => {
+router.delete("/:productId", verifyJwt, async (req, res) => {
   try {
     const response = await axios.delete(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
@@ -88,7 +88,7 @@ router.delete("/products/:productId", verifyJwt, async (req, res) => {
   }
 });
 
-router.patch("/products/:productId/restore", verifyJwt, async (req, res) => {
+router.patch("/:productId/restore", verifyJwt, async (req, res) => {
   try {
     const response = await axios.patch(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}/restore`,
