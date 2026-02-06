@@ -9,6 +9,10 @@ app.get("/", (req, res) => {
   res.send("API Gateway Service is running 🚀");
 });
 
+app.get("/health", (req, res) => {
+  res.json({ status: "API Gateway is running" });
+});
+
 app.use("/api/auth", gatewayRoutes);
 
-export default app;
+export default serverless(app);
