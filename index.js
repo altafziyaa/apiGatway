@@ -4,7 +4,7 @@ import cors from "cors";
 import authGatewayRoutes from "./src/routes/auth.gateway.Routes.js";
 import cartGatewayRoutes from "./src/routes/cart.gateway.route.js";
 import productGatewayRoutes from "./src/routes/product.gateway.route.js";
-import { verifyJwt } from "./src/middleware/authMiddleware.js";
+// import { verifyJwt } from "./src/middleware/authMiddleware.js";
 
 const app = express();
 
