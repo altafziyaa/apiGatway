@@ -9,7 +9,6 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/auth", gatewayRoutes);
-
-app.listen(3000, () => {
-  console.log("API Gateway running on http://localhost:3000");
+app.get("/", (req, res) => {
+  res.send("api gateway Service is running 🚀");
 });
