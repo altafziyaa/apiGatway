@@ -1,11 +1,19 @@
-export default function handler(req, res) {
-  if (req.url === "/health") {
-    return res.status(200).json({ status: "API Gateway is running" });
-  }
+import express from "express";
+import serverless from "serverless-http";
+import gatewayRoutes from "../src/routes/auth.gateway.Routes.js";
 
-  if (req.url === "/") {
-    return res.status(200).send("API Gateway Service is running 🚀");
-  }
+const app = express();
 
-  return res.status(404).json({ error: "Route not found" });
-}
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("API Gateway Service is running 🚀");
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "API Gateway is running" });
+});
+
+app.use("/api/auth", gatewayRoutes);
+
+export default serverless(app);
