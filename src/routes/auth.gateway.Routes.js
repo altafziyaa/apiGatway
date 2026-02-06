@@ -8,42 +8,32 @@ const getAuthHeader = (req) => ({
   authorization: req.headers.authorization || "",
 });
 
+// ---------- PUBLIC ----------
 router.post("/signup", async (req, res) => {
   try {
-    console.log("➡️ Gateway → Auth Signup:", services.AUTH_SERVICE);
-
     const response = await axios.post(
       `${services.AUTH_SERVICE}/api/auth/signup`,
       req.body,
     );
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Signup error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
-    console.log("Gateway → Auth Login:", services.AUTH_SERVICE);
-
     const response = await axios.post(
       `${services.AUTH_SERVICE}/api/auth/login`,
       req.body,
     );
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Login error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
+// ---------- PROTECTED ----------
 router.post("/logout", async (req, res) => {
   try {
     const response = await axios.post(
@@ -51,13 +41,9 @@ router.post("/logout", async (req, res) => {
       {},
       { headers: getAuthHeader(req) },
     );
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Logout error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
@@ -66,13 +52,9 @@ router.get("/me", async (req, res) => {
     const response = await axios.get(`${services.AUTH_SERVICE}/api/auth/me`, {
       headers: getAuthHeader(req),
     });
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Me error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
@@ -83,29 +65,22 @@ router.put("/me", async (req, res) => {
       req.body,
       { headers: getAuthHeader(req) },
     );
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Update me error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
+// ---------- ADMIN ----------
 router.get("/users", async (req, res) => {
   try {
     const response = await axios.get(
       `${services.AUTH_SERVICE}/api/auth/users`,
       { headers: getAuthHeader(req) },
     );
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Users error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
@@ -115,13 +90,9 @@ router.delete("/users/:id", async (req, res) => {
       `${services.AUTH_SERVICE}/api/auth/users/${req.params.id}`,
       { headers: getAuthHeader(req) },
     );
-
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("❌ Delete user error:", error.message);
-    return res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Auth service error" });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data);
   }
 });
 
