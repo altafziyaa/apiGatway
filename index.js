@@ -4,7 +4,7 @@ import cors from "cors";
 import authGatewayRoutes from "./src/routes/auth.gateway.Routes.js";
 import cartGatewayRoutes from "./src/routes/cart.gateway.route.js";
 import productGatewayRoutes from "./src/routes/product.gateway.route.js";
-// import { verifyJwt } from "./src/middleware/authMiddleware.js";
+import { verifyJwt } from "./src/middleware/authMiddleware.js";
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.send("API Gateway Service is running");
 });
 
-app.use("/api/auth", authGatewayRoutes);
+app.use("/api/auth", verifyJwt, authGatewayRoutes);
 app.use("/api/cart", cartGatewayRoutes);
 app.use("/api/products", productGatewayRoutes);
 
@@ -28,4 +28,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-export default app;
+// export default app;
+// git add .
+// git commit -m "debugging"
+// git push -u origin main
