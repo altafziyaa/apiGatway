@@ -3,9 +3,15 @@ import axios from "axios";
 import services from "../config/services.js";
 
 const router = express.Router();
+
+// ✅ Helper (NOT middleware)
 const getAuthHeader = (req) => ({
   authorization: req.headers.authorization || "",
 });
+
+/* =======================
+   PUBLIC ROUTES
+======================= */
 
 router.get("/", async (req, res) => {
   try {
@@ -34,15 +40,17 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
-router.post("/", getAuthHeader, async (req, res) => {
+/* =======================
+   PROTECTED ROUTES
+======================= */
+
+router.post("/", async (req, res) => {
   try {
     const response = await axios.post(
       `${services.PRODUCT_SERVICE}/api/products`,
       req.body,
       {
-        headers: {
-          authorization: req.headers.authorization,
-        },
+        headers: getAuthHeader(req), // ✅ FIX
       },
     );
     res.status(response.status).json(response.data);
@@ -53,15 +61,13 @@ router.post("/", getAuthHeader, async (req, res) => {
   }
 });
 
-router.put("/:productId", getAuthHeader, async (req, res) => {
+router.put("/:productId", async (req, res) => {
   try {
     const response = await axios.put(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
       req.body,
       {
-        headers: {
-          authorization: req.headers.authorization,
-        },
+        headers: getAuthHeader(req), // ✅ FIX
       },
     );
     res.status(response.status).json(response.data);
@@ -72,14 +78,12 @@ router.put("/:productId", getAuthHeader, async (req, res) => {
   }
 });
 
-router.delete("/:productId", getAuthHeader, async (req, res) => {
+router.delete("/:productId", async (req, res) => {
   try {
     const response = await axios.delete(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
       {
-        headers: {
-          authorization: req.headers.authorization,
-        },
+        headers: getAuthHeader(req), // ✅ FIX
       },
     );
     res.status(response.status).json(response.data);
@@ -90,15 +94,13 @@ router.delete("/:productId", getAuthHeader, async (req, res) => {
   }
 });
 
-router.patch("/:productId/restore", getAuthHeader, async (req, res) => {
+router.patch("/:productId/restore", async (req, res) => {
   try {
     const response = await axios.patch(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}/restore`,
       {},
       {
-        headers: {
-          authorization: req.headers.authorization,
-        },
+        headers: getAuthHeader(req), // ✅ FIX
       },
     );
     res.status(response.status).json(response.data);
