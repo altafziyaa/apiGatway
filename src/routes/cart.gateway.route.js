@@ -4,29 +4,16 @@ import services from "../config/services.js";
 
 const router = express.Router();
 
+// ✅ Helper (NOT middleware)
 const getAuthHeader = (req) => ({
   authorization: req.headers.authorization || "",
 });
 
-router.get("/", async (req, res) => {
-  try {
-    const response = await axios.get(`${services.CART_SERVICE}/api/cart`, {
-      headers: getAuthHeader(req),
-    });
-
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Cart service error" });
-  }
-});
-
 // ADD ITEM TO CART
-router.post("/items", async (req, res) => {
+router.post("/addcart", async (req, res) => {
   try {
     const response = await axios.post(
-      `${services.CART_SERVICE}/api/cart/items`,
+      `${services.CART_SERVICE}/api/cart/addcart`,
       req.body,
       {
         headers: getAuthHeader(req),
@@ -42,10 +29,10 @@ router.post("/items", async (req, res) => {
 });
 
 // UPDATE ITEM QUANTITY
-router.put("/items/:itemId", async (req, res) => {
+router.put("/quantity/:itemId", async (req, res) => {
   try {
     const response = await axios.put(
-      `${services.CART_SERVICE}/api/cart/items/${req.params.itemId}`,
+      `${services.CART_SERVICE}/api/cart/quantity/${req.params.itemId}`,
       req.body,
       {
         headers: getAuthHeader(req),
@@ -61,10 +48,10 @@ router.put("/items/:itemId", async (req, res) => {
 });
 
 // REMOVE ITEM FROM CART
-router.delete("/items/:itemId", async (req, res) => {
+router.delete("/delete/:itemId", async (req, res) => {
   try {
     const response = await axios.delete(
-      `${services.CART_SERVICE}/api/cart/items/${req.params.itemId}`,
+      `${services.CART_SERVICE}/api/cart/delete/${req.params.itemId}`,
       {
         headers: getAuthHeader(req),
       },
@@ -79,11 +66,14 @@ router.delete("/items/:itemId", async (req, res) => {
 });
 
 // CLEAR CART
-router.delete("/", async (req, res) => {
+router.delete("/clear", async (req, res) => {
   try {
-    const response = await axios.delete(`${services.CART_SERVICE}/api/cart`, {
-      headers: getAuthHeader(req),
-    });
+    const response = await axios.delete(
+      `${services.CART_SERVICE}/api/cart/clear`,
+      {
+        headers: getAuthHeader(req),
+      },
+    );
 
     res.status(response.status).json(response.data);
   } catch (error) {
