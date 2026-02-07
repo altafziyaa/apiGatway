@@ -4,7 +4,6 @@ import services from "../config/services.js";
 
 const router = express.Router();
 
-// ✅ Helper (NOT middleware) – SAME AS PRODUCT ROUTER
 const getAuthHeader = (req) => ({
   authorization: req.headers.authorization || "",
 });
