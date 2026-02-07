@@ -1,7 +1,6 @@
 import express from "express";
 import axios from "axios";
 import services from "../config/services.js";
-import { verifyJwt } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 const getAuthHeader = (req) => ({
