@@ -4,6 +4,9 @@ import services from "../config/services.js";
 import { verifyJwt } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+const getAuthHeader = (req) => ({
+  authorization: req.headers.authorization || "",
+});
 
 router.get("/", async (req, res) => {
   try {
@@ -32,7 +35,7 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
-router.post("/", verifyJwt, async (req, res) => {
+router.post("/", getAuthHeader, async (req, res) => {
   try {
     const response = await axios.post(
       `${services.PRODUCT_SERVICE}/api/products`,
@@ -51,7 +54,7 @@ router.post("/", verifyJwt, async (req, res) => {
   }
 });
 
-router.put("/:productId", verifyJwt, async (req, res) => {
+router.put("/:productId", getAuthHeader, async (req, res) => {
   try {
     const response = await axios.put(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
@@ -70,7 +73,7 @@ router.put("/:productId", verifyJwt, async (req, res) => {
   }
 });
 
-router.delete("/:productId", verifyJwt, async (req, res) => {
+router.delete("/:productId", getAuthHeader, async (req, res) => {
   try {
     const response = await axios.delete(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
@@ -88,7 +91,7 @@ router.delete("/:productId", verifyJwt, async (req, res) => {
   }
 });
 
-router.patch("/:productId/restore", verifyJwt, async (req, res) => {
+router.patch("/:productId/restore", getAuthHeader, async (req, res) => {
   try {
     const response = await axios.patch(
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}/restore`,
