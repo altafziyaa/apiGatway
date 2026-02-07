@@ -4,111 +4,83 @@ import services from "../config/services.js";
 
 const router = express.Router();
 
-const getAuthHeader = (req) => ({
+const forwardAuth = (req) => ({
   authorization: req.headers.authorization || "",
 });
 
-// GET ALL PRODUCTS (PUBLIC)
-router.get("/", async (req, res) => {
+const proxy = (method, urlBuilder) => async (req, res) => {
   try {
-    const response = await axios.get(`${services.PRODUCT_SERVICE}/api/products`);
+    const response = await axios({
+      method,
+      url: urlBuilder(req),
+      data: req.body,
+      headers: forwardAuth(req),
+      params: req.query, // pagination etc.
+    });
 
-    res.status(response.status).json(response.data);
+    return res.status(response.status).json(response.data);
   } catch (error) {
-    res
+    return res
       .status(error.response?.status || 500)
       .json(error.response?.data || { message: "Product service error" });
   }
-});
+};
 
-// GET PRODUCT BY ID (PUBLIC)
-router.get("/:productId", async (req, res) => {
-  try {
-    const response = await axios.get(
-      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
-    );
+// GET ALL PRODUCTS
+router.get(
+  "/",
+  proxy("get", () => `${services.PRODUCT_SERVICE}/api/products`),
+);
 
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Product service error" });
-  }
-});
+// GET PRODUCT BY ID
+router.get(
+  "/:productId",
+  proxy(
+    "get",
+    (req) => `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
+  ),
+);
+// CREATE PRODUCT
+router.post(
+  "/",
+  proxy("post", () => `${services.PRODUCT_SERVICE}/api/products`),
+);
 
-// CREATE PRODUCT (PROTECTED)
-router.post("/", async (req, res) => {
-  try {
-    const response = await axios.post(
-      `${services.PRODUCT_SERVICE}/api/products`,
-      req.body,
-      {
-        headers: getAuthHeader(req),
-      },
-    );
+// UPDATE PRODUCT
+router.put(
+  "/:productId",
+  proxy(
+    "put",
+    (req) => `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
+  ),
+);
 
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Product service error" });
-  }
-});
+// DELETE PRODUCT
+router.delete(
+  "/:productId",
+  proxy(
+    "delete",
+    (req) => `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
+  ),
+);
 
-// UPDATE PRODUCT (PROTECTED)
-router.put("/:productId", async (req, res) => {
-  try {
-    const response = await axios.put(
-      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
-      req.body,
-      {
-        headers: getAuthHeader(req),
-      },
-    );
-
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Product service error" });
-  }
-});
-
-// DELETE PRODUCT (PROTECTED)
-router.delete("/:productId", async (req, res) => {
-  try {
-    const response = await axios.delete(
-      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
-      {
-        headers: getAuthHeader(req),
-      },
-    );
-
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Product service error" });
-  }
-});
-
-// RESTORE PRODUCT (PROTECTED)
-router.patch("/:productId/restore", async (req, res) => {
-  try {
-    const response = await axios.patch(
+// RESTORE PRODUCT
+router.patch(
+  "/:productId/restore",
+  proxy(
+    "patch",
+    (req) =>
       `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}/restore`,
-      req.body,
-      {
-        headers: getAuthHeader(req),
-      },
-    );
+  ),
+);
 
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res
-      .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Product service error" });
-  }
-});
+router.get(
+  "/internal/:productId",
+  proxy(
+    "get",
+    (req) =>
+      `${services.PRODUCT_SERVICE}/api/internal/products/${req.params.productId}`,
+  ),
+);
 
 export default router;
