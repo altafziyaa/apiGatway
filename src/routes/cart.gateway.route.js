@@ -4,12 +4,10 @@ import services from "../config/services.js";
 
 const router = express.Router();
 
-// ✅ Helper (NOT middleware)
 const getAuthHeader = (req) => ({
   authorization: req.headers.authorization || "",
 });
 
-// ADD ITEM TO CART
 router.post("/addcart", async (req, res) => {
   try {
     const response = await axios.post(
@@ -20,52 +18,50 @@ router.post("/addcart", async (req, res) => {
       },
     );
 
-    res.status(response.status).json(response.data);
+    return res.status(response.status).json(response.data);
   } catch (error) {
-    res
+    return res
       .status(error.response?.status || 500)
       .json(error.response?.data || { message: "Cart service error" });
   }
 });
 
-// UPDATE ITEM QUANTITY
-router.put("/quantity/:itemId", async (req, res) => {
+router.patch("/quantity", async (req, res) => {
   try {
-    const response = await axios.put(
-      `${services.CART_SERVICE}/api/cart/quantity/${req.params.itemId}`,
+    const response = await axios.patch(
+      `${services.CART_SERVICE}/api/cart/quantity`,
       req.body,
       {
         headers: getAuthHeader(req),
       },
     );
 
-    res.status(response.status).json(response.data);
+    return res.status(response.status).json(response.data);
   } catch (error) {
-    res
+    return res
       .status(error.response?.status || 500)
       .json(error.response?.data || { message: "Cart service error" });
   }
 });
 
-// REMOVE ITEM FROM CART
-router.delete("/delete/:itemId", async (req, res) => {
+router.delete("/delete", async (req, res) => {
   try {
     const response = await axios.delete(
-      `${services.CART_SERVICE}/api/cart/delete/${req.params.itemId}`,
+      `${services.CART_SERVICE}/api/cart/delete`,
       {
         headers: getAuthHeader(req),
+        data: req.body, // ✅ axios delete body support
       },
     );
 
-    res.status(response.status).json(response.data);
+    return res.status(response.status).json(response.data);
   } catch (error) {
-    res
+    return res
       .status(error.response?.status || 500)
       .json(error.response?.data || { message: "Cart service error" });
   }
 });
 
-// CLEAR CART
 router.delete("/clear", async (req, res) => {
   try {
     const response = await axios.delete(
@@ -75,9 +71,9 @@ router.delete("/clear", async (req, res) => {
       },
     );
 
-    res.status(response.status).json(response.data);
+    return res.status(response.status).json(response.data);
   } catch (error) {
-    res
+    return res
       .status(error.response?.status || 500)
       .json(error.response?.data || { message: "Cart service error" });
   }
