@@ -8,26 +8,39 @@ const getAuthHeader = (req) => ({
   authorization: req.headers.authorization || "",
 });
 
-// GET CART
+// GET ALL PRODUCTS (PUBLIC)
 router.get("/", async (req, res) => {
   try {
-    const response = await axios.get(`${services.CART_SERVICE}/api/cart`, {
-      headers: getAuthHeader(req),
-    });
+    const response = await axios.get(`${services.PRODUCT_SERVICE}/api/products`);
 
     res.status(response.status).json(response.data);
   } catch (error) {
     res
       .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Cart service error" });
+      .json(error.response?.data || { message: "Product service error" });
   }
 });
 
-// ADD ITEM TO CART
-router.post("/items", async (req, res) => {
+// GET PRODUCT BY ID (PUBLIC)
+router.get("/:productId", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
+    );
+
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res
+      .status(error.response?.status || 500)
+      .json(error.response?.data || { message: "Product service error" });
+  }
+});
+
+// CREATE PRODUCT (PROTECTED)
+router.post("/", async (req, res) => {
   try {
     const response = await axios.post(
-      `${services.CART_SERVICE}/api/cart/items`,
+      `${services.PRODUCT_SERVICE}/api/products`,
       req.body,
       {
         headers: getAuthHeader(req),
@@ -38,15 +51,15 @@ router.post("/items", async (req, res) => {
   } catch (error) {
     res
       .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Cart service error" });
+      .json(error.response?.data || { message: "Product service error" });
   }
 });
 
-// UPDATE ITEM QUANTITY
-router.put("/items/:itemId", async (req, res) => {
+// UPDATE PRODUCT (PROTECTED)
+router.put("/:productId", async (req, res) => {
   try {
     const response = await axios.put(
-      `${services.CART_SERVICE}/api/cart/items/${req.params.itemId}`,
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
       req.body,
       {
         headers: getAuthHeader(req),
@@ -57,15 +70,15 @@ router.put("/items/:itemId", async (req, res) => {
   } catch (error) {
     res
       .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Cart service error" });
+      .json(error.response?.data || { message: "Product service error" });
   }
 });
 
-// REMOVE ITEM FROM CART
-router.delete("/items/:itemId", async (req, res) => {
+// DELETE PRODUCT (PROTECTED)
+router.delete("/:productId", async (req, res) => {
   try {
     const response = await axios.delete(
-      `${services.CART_SERVICE}/api/cart/items/${req.params.itemId}`,
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}`,
       {
         headers: getAuthHeader(req),
       },
@@ -75,22 +88,26 @@ router.delete("/items/:itemId", async (req, res) => {
   } catch (error) {
     res
       .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Cart service error" });
+      .json(error.response?.data || { message: "Product service error" });
   }
 });
 
-// CLEAR CART
-router.delete("/", async (req, res) => {
+// RESTORE PRODUCT (PROTECTED)
+router.patch("/:productId/restore", async (req, res) => {
   try {
-    const response = await axios.delete(`${services.CART_SERVICE}/api/cart`, {
-      headers: getAuthHeader(req),
-    });
+    const response = await axios.patch(
+      `${services.PRODUCT_SERVICE}/api/products/${req.params.productId}/restore`,
+      req.body,
+      {
+        headers: getAuthHeader(req),
+      },
+    );
 
     res.status(response.status).json(response.data);
   } catch (error) {
     res
       .status(error.response?.status || 500)
-      .json(error.response?.data || { message: "Cart service error" });
+      .json(error.response?.data || { message: "Product service error" });
   }
 });
 
