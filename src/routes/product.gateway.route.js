@@ -15,7 +15,7 @@ const proxy = (method, urlBuilder) => async (req, res) => {
       url: urlBuilder(req),
       data: req.body,
       headers: forwardAuth(req),
-      params: req.query, // pagination etc.
+      params: req.query,
     });
 
     return res.status(response.status).json(response.data);
